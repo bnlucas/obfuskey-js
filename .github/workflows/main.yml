@@ -45,7 +45,7 @@ jobs:
       - name: Install dependencies
         run: npm install --force # Use --force if you anticipate peer dependency issues with old cache or new Node.js versions
       - name: Run tests and collect coverage
-        run: npm test -- --coverage --coverageReporters=text --coverageReporters=lcov # Assuming Jest or similar config for coverage
+        run: npm test:cov
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
