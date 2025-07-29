@@ -16,7 +16,7 @@
   },
   "include": [
     "src/**/*"                      /* Include all .ts files in the src directory and its subdirectories */
-  ],
+, "vite.config.ts"  ],
   "exclude": [
     "node_modules"                  /* Exclude node_modules */
   ]
