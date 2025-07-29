@@ -56,7 +56,6 @@ jobs:
 
   deploy:
     needs: test
-    # Only deploy on push to main, and not if the commit message contains 'chore(release):'
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'chore(release):')
     runs-on: ubuntu-latest
     steps:
@@ -64,7 +63,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x' # Use a stable Node.js version for deployment
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org/'
+          token: ${{ secrets.NPM_TOKEN }}
       - name: Cache Node modules
         id: cache-node-modules-deploy
         uses: actions/cache@v4
@@ -77,6 +78,4 @@ jobs:
       - name: Install dependencies
         run: npm install --force
       - name: Publish to npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Ensure this secret is set in your repo settings
         run: npm publish
