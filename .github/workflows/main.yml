@@ -1,0 +1,82 @@
+name: CI
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x' # Or a specific LTS version like '20.x'
+      - name: Install dependencies
+        run: npm install
+      - name: Run ESLint
+        run: npm run lint # Assuming you have a "lint" script in your package.json, e.g., "eslint ."
+
+  test:
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [ '18.x', '20.x', '22.x' ] # Recommended LTS versions
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Cache Node modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm # Caches global npm cache
+          key: ${{ runner.os }}-node-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ matrix.node-version }}-
+            ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: npm install --force # Use --force if you anticipate peer dependency issues with old cache or new Node.js versions
+      - name: Run tests and collect coverage
+        run: npm test -- --coverage --coverageReporters=text --coverageReporters=lcov # Assuming Jest or similar config for coverage
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage/lcov.info # Adjust if your coverage report is named differently or in another location
+          name: obfuskey-ts-coverage
+          fail_ci_if_error: true
+
+  deploy:
+    needs: test
+    # Only deploy on push to main, and not if the commit message contains 'chore(release):'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'chore(release):')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x' # Use a stable Node.js version for deployment
+      - name: Cache Node modules
+        id: cache-node-modules-deploy
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-20.x-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-20.x-
+            ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: npm install --force
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Ensure this secret is set in your repo settings
+        run: npm publish
