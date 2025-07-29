@@ -1,5 +1,5 @@
 {
-  "name": "your-library-name",
+  "name": "obfuskey",
   "version": "1.0.0",
   "description": "A robust obfuscation library for JavaScript/TypeScript.",
   "type": "module",
