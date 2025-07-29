@@ -1,0 +1,99 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-store/
+package-lock.json # If you're not committing it or using npm <= 5
+.env # Environment variables
+
+# TypeScript
+# Compiled output
+dist/
+build/
+*.js
+*.js.map
+*.d.ts
+*.tsbuildinfo
+
+# IDEs and Editors
+# VS Code
+.vscode/
+.vscode/*.log
+.vscode/*.code-workspace
+
+# IntelliJ / WebStorm
+.idea/
+.idea/*.iml
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/vcs.xml
+.idea/modules.xml
+.idea/codeStyles/
+.idea/libraries/
+.idea/inspectionProfiles/
+
+# Eclipse
+.project
+.classpath
+.settings/
+.buildpath
+
+# Visual Studio
+.vs/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Atom
+.atom/
+
+# Vim
+*.swp
+*.swo
+*.swn
+*.bak
+*.orig
+*.pyc
+
+# Operating System Files
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*.o
+*.so
+*.a
+*.bak
+*.orig
+
+# Logs, Temp, and Cache
+logs/
+*.log
+tmp/
+temp/
+.cache/
+.eslintcache
+.nyc_output/
+coverage/
+
+# Test/Linting Specific
+*.snap # Jest snapshot files
+.coverage/
+
+# Miscellaneous
+.DS_Store
+.tool-versions
+.nvmrc
+
+# Editor configuration files (optional)
+.editorconfig
